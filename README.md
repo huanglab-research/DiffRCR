@@ -69,8 +69,7 @@ Furthermore, we are benefitting a lot from the following projects:
 ## Citation
 If you find the code in this repository useful for your research consider citing it.
 ```
-@article{
-zuo2025DiffRCR,
+@article{zuo2025DiffRCR,
 title={Omni-frequency Diffusion-based Regional Feature Consistency Recovery for Blind Image Super-Resolution},
 journal={Expert systems with Applications},
 author={Chenjuan Zuo, Zhiqiang Wei, Xiaodong Wang, Jie Nie, Lei Huang},
