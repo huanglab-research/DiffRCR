@@ -10,7 +10,7 @@ This is the implementation of paper: Chenjuan Zuo, Zhiqiang Wei, Xiaodong Wang, 
 	<tbody>
     <tr>
 		<tr>
-			<td width="40%" > <img src="3-1.png"> </td>
+			<td width="40%" > <img src=" .png"> </td>
 		</tr>
 	</tbody>
 </table>
