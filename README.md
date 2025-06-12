@@ -2,7 +2,7 @@
 
 ## Brief
 
-This is the implementation of paper: Chenjuan Zuo, Zhiqiang Wei, Xiaodong Wang, Jie Nie, Lei Huang*, "Omni-frequency Diffusion-based Regional Feature Consistency Recovery for Blind Image Super-Resolution," Expert Systems with Applications, 2025.
+This is the implementation of paper: Chenjuan Zuo, Zhiqiang Wei, Xiaodong Wang, Jie Nie, Lei Huang*, Omni-frequency Diffusion-based Regional Feature Consistency Recovery for Blind Image Super-Resolution, Expert Systems with Applications, 2025.
 
 
 ## The Framework of the Proposed DiffRCR
