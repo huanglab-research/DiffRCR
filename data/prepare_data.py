@@ -162,9 +162,9 @@ def prepare(img_path, out_path, n_worker, sizes=(16, 128), resample=Image.BICUBI
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', '-p', type=str,
-                        default='/home/haida/data/zuochenjuan/SR3_plus/dataset/DRealSR_val_64_256/lr')
+                        default='dataset/DRealSR_val_64_256/lr')
     parser.add_argument('--out', '-o', type=str,
-                        default='/home/haida/data/zuochenjuan/SR3_plus/dataset/DRealSR_val')
+                        default='dataset/DRealSR_val')
 
     parser.add_argument('--size', type=str, default='64,256')
     parser.add_argument('--n_worker', type=int, default=8)
