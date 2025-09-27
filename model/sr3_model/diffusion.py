@@ -8,8 +8,7 @@ import numpy as np
 from tqdm import tqdm
 import cv2
 from PIL import Image
-import func.depart_freq as DeFreq
-import func.enhance_img as Enhimg
+import depart_freq as DeFreq
 import torchvision.transforms as transforms
 
 def _warmup_beta(linear_start, linear_end, n_timestep, warmup_frac):
