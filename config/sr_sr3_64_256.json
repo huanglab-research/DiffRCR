@@ -1,19 +1,16 @@
 {
     "name": "sr_RealSR",
-    "phase": "train", // train or val
+    "phase": "train", 
     "gpu_ids": [
         0
     ],
-    "path": { //set the path
+    "path": { 
         "log": "logs",
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": "/home/haida/zuochenjuan/SR3/experiments/sr_realsr_230905_210556(Pth save)/checkpoint/I450000_E9000"
+        "resume_state": "experiments/sr_realsr_230905_210556(Pth save)/checkpoint/I450000_E9000"
 
-        // "resume_state": "experiments/sr_ffhq_210806_204158/checkpoint/I640000_E37" //pretrain model or training state
-        //"/home/haida/zuochenjuan/SR3/experiments/sr_realsr_230905_210556(Pth save)/checkpoint/I1000000_E20000"
-        ////home/haida/zuochenjuan/SR3/experiments/sr_realsr_230905_210556(Pth save)/checkpoint/I450000_E9000
     },
     "datasets": {
         "train": {
@@ -97,3 +94,4 @@
         "project": "sr_RealSR"
     }
 }
+
