@@ -34,7 +34,6 @@ pip install -r requirement.txt
  ### Data Prepare
 ```python
 python data/prepare_data.py  --path [dataset root]  --out [output root] --size 64,256 -l
-python function/get_fre.py
 ```
 ### Training/Resume Training
 
