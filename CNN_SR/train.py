@@ -20,9 +20,9 @@ from utils import AverageMeter, calc_psnr
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--train-file', type=str,default="/home/haida/data/zuochenjuan/SR3_plus/CNN_SR/outputs/Dr_output_train.h5")
-    parser.add_argument('--eval-file', type=str, default="/home/haida/data/zuochenjuan/SR3_plus/CNN_SR/outputs/Dr_output_test.h5")
-    parser.add_argument('--outputs-dir', type=str, default="/home/haida/data/zuochenjuan/SR3_plus/CNN_SR/outputs")
+    parser.add_argument('--train-file', type=str,default="CNN_SR/outputs/Dr_output_train.h5")
+    parser.add_argument('--eval-file', type=str, default="CNN_SR/outputs/Dr_output_test.h5")
+    parser.add_argument('--outputs-dir', type=str, default="CNN_SR/outputs")
     parser.add_argument('--scale', type=int, default=4)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--batch-size', type=int, default=16)
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     torch.manual_seed(args.seed)
 
     model = SRCNN().to(device)
-    model.load_state_dict(torch.load("/home/haida/data/zuochenjuan/SR3_plus/CNN_SR/outputs/x_DIV_deep4/epoch_43.pth"))
+    model.load_state_dict(torch.load("CNN_SR/outputs/x_DIV_deep4/epoch_43.pth"))
     criterion = nn.MSELoss()
     optimizer = optim.Adam([
         {'params': model.conv1.parameters()},
