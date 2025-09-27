@@ -16,7 +16,6 @@ def default(val, d):
 
 # PositionalEncoding Source： https://github.com/lmnt-com/wavegrad/blob/master/src/wavegrad/model.py
 
-###加
 class Senet(nn.Module):
     def __init__(self,channel,ratio=16):
         super(Senet,self).__init__()
@@ -86,12 +85,7 @@ class Cbam(nn.Module):
         x=self.channel_attention(x)
         x=self.spacial_attention(x)
         return x
-
-
-
-
-
-
+        
 class PositionalEncoding(nn.Module):
     def __init__(self, dim):
         super().__init__()
@@ -227,15 +221,15 @@ class ResnetBlocWithAttn(nn.Module):
             dim, dim_out, noise_level_emb_dim, norm_groups=norm_groups, dropout=dropout)
         if with_attn:
             self.attn = SelfAttention(dim_out, norm_groups=norm_groups)
-        #self.channel_attention=Channel_attention(dim_out,ratio=16)
-        #self.spacial_attention=Spacial_attention(kernel_size=7)
+        self.channel_attention=Channel_attention(dim_out,ratio=16)
+        self.spacial_attention=Spacial_attention(kernel_size=7)
 
     def forward(self, x, time_emb):
         x = self.res_block(x, time_emb)
         if(self.with_attn):
             x = self.attn(x)
-        #x=self.channel_attention(x)
-        #x=self.spacial_attention(x)
+        x=self.channel_attention(x)
+        x=self.spacial_attention(x)
         return x
 
 
