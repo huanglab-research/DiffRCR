@@ -160,7 +160,6 @@ class GaussianDiffusion(nn.Module):
                     
             x0_tmp=(x+1)/2.0*255.0
             xc_tmp=(condition_x+1)/2.0*255.0
-            #fre_xnoisy=DeFreq.depart_frequence(x0_tmp[0],t)
             fre_xsr=DeFreq.depart_frequence(xc_tmp[0],t)
 
             high_xsr=torch.from_numpy(fre_xsr[2].astype(float))
