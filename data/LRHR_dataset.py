@@ -90,29 +90,19 @@ class LRHRDataset(Dataset):
                 if self.need_LR:
                     img_LR = Image.open(BytesIO(lr_img_bytes)).convert("RGB")
         else:
-            #print(np.array(Image.open(self.hr_path[index])).shape)
-            #print("**********************************")
-            img_HR = Image.open(self.hr_path[index]).convert("RGB")#原图(256, 256, 3)
-            #print(np.array(img_HR).shape)
-            #print(np.array(img_HR))
-            #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            img_HR = Image.open(self.hr_path[index]).convert("RGB")
             img_SR = Image.open(self.sr_path[index]).convert("RGB")
-            #print(type(img_SR))
             if self.need_LR:
                 img_LR = Image.open(self.lr_path[index]).convert("RGB")
-            #print(type(img_HR))
-                
-        #return {'LR': img_LR, 'HR': img_HR, 'SR': img_SR, 'Index': index}##增加
         
         if self.need_LR:
             [img_LR, img_SR, img_HR] = Util.transform_augment(
-                [img_LR, img_SR, img_HR], split=self.split, min_max=(-1, 1))#(3, 256, 256)
-            #print(np.array(img_HR).shape)
+                [img_LR, img_SR, img_HR], split=self.split, min_max=(-1, 1))
             
             return {'LR': img_LR, 'HR': img_HR, 'SR': img_SR, 'Index': index}
         else:
             [img_SR, img_HR] = Util.transform_augment(
-                [img_SR, img_HR], split=self.split, min_max=(-1, 1))#(3, 256, 256)
+                [img_SR, img_HR], split=self.split, min_max=(-1, 1))
             #print(np.array(img_HR).shape)
             return {'HR': img_HR, 'SR': img_SR, 'Index': index}
         
