@@ -168,11 +168,11 @@ class GaussianDiffusion(nn.Module):
             low_xsr=torch.from_numpy(fre_xsr[0].astype(float))
             
             high_xsr=high_xsr / 255.0
-            high_xsr =high_xsr * 2 - 1#标准化归一化
+            high_xsr =high_xsr * 2 - 1
             mid_xsr=mid_xsr / 255.0
-            mid_xsr =mid_xsr * 2 - 1#标准化归一化
+            mid_xsr =mid_xsr * 2 - 1
             low_xsr=low_xsr / 255.0
-            low_xsr =low_xsr * 2 - 1#标准化归一化
+            low_xsr =low_xsr * 2 - 1
         
             depart_gray = torch.stack([low_xsr,mid_xsr,high_xsr], dim=0).unsqueeze(0)
             if xh is not None:
