@@ -68,7 +68,7 @@ def default(val, d):
 class GaussianDiffusion(nn.Module):
     def __init__(
         self,
-        denoise_fn,#用UNet
+        denoise_fn,
         image_size,
         channels=3,
         loss_type='l1',
@@ -173,55 +173,9 @@ class GaussianDiffusion(nn.Module):
             mid_xsr =mid_xsr * 2 - 1#标准化归一化
             low_xsr=low_xsr / 255.0
             low_xsr =low_xsr * 2 - 1#标准化归一化
-            '''
-            high_xsr=fre_xsr[1]#256,256
-            #print(high_xsr)
-            #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/high_{}_image_noise.png'.format(t),high_xsr)
-
-            similar_region_hf=DeFreq.calculate_ssim(fre_xnoisy[1],fre_xsr[1],t)#获取SR和HRnoise的高频区域的相似区域(256,256)(0,1)
-            similar_region_hf= torch.from_numpy(similar_region_hf)
-
-
-
-            gray_image1 =x0_tmp[0].cpu().numpy() #3,256,256
-            gray_image1 = np.transpose(gray_image1, (1, 2, 0))#256,256,3
-
-            # 转换为灰度图
-            gray_xnoise = cv2.cvtColor(gray_image1, cv2.COLOR_BGR2GRAY)#(256, 256)
-
-            gray_image2 = xc_tmp[0].cpu().numpy() 
-            gray_image2 = np.transpose(gray_image2, (1, 2, 0))
-            # 转换为灰度图
-            gray_xsr = cv2.cvtColor(gray_image2, cv2.COLOR_BGR2GRAY)#(256, 256)
-            gray_low=gray_xsr
-
-            gray_xnoise_similar=torch.from_numpy(gray_xnoise*np.array(1-similar_region_hf))
-            gray_xsr_similar=torch.from_numpy(gray_xsr*np.array(1-similar_region_hf))
-            #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/{}_gray_xsr.png'.format(t), gray_xsr)
-            gray_xnoise=torch.from_numpy(gray_xnoise)
-            gray_xsr=torch.from_numpy(gray_xsr)
-            
-            gray_low=gray_xsr
-
-            gray_xsr_similar=gray_xsr_similar / 255.0
-            gray_xsr_similar =gray_xsr_similar * 2 - 1#标准化归一化
-            gray_low=gray_low / 255.0
-            gray_low =gray_low * 2 - 1
-            gray_xsr=gray_xsr / 255.0
-            gray_xsr =gray_xsr * 2 - 1
-            gray_xnoise=gray_xnoise / 255.0
-            gray_xnoise =gray_xnoise * 2 - 1
-            gray_xnoise_similar=gray_xnoise_similar/255.0
-            gray_xnoise_similar=gray_xnoise_similar*2-1
-            '''
-
-
-            #depart_gray = torch.stack([gray_xnoise_similar,gray_xsr_similar,gray_low], dim=0).unsqueeze(0)
+        
             depart_gray = torch.stack([low_xsr,mid_xsr,high_xsr], dim=0).unsqueeze(0)
-            ###############
-            #print("*************")
             if xh is not None:
-                #print("^^^^^^^^^^^")
                 continuous_sqrt_alpha_cumprod = torch.FloatTensor(
                     np.random.uniform(
                         self.sqrt_alphas_cumprod_prev[t],
@@ -233,43 +187,25 @@ class GaussianDiffusion(nn.Module):
                     1, -1)
                 noise=None
                 noise = default(noise, lambda: torch.randn_like(condition_x))
-                #x_save=np.transpose(x0_tmp[0].cpu().numpy(), (1, 2, 0))
-                #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/{}_xsave.png'.format(t), x_save)
-                x_0_noisy = self.q_sample(#求加噪后的xsr
+                
+                x_0_noisy = self.q_sample(
                     x_start=xh, continuous_sqrt_alpha_cumprod=continuous_sqrt_alpha_cumprod.view(-1, 1, 1, 1), noise=noise)
                 xh_tmp=(xh+1)/2.0*255.0
                 fre_xh=DeFreq.depart_frequence(xh_tmp[0],t)
                 high_xh=torch.from_numpy(fre_xh[2].astype(float))
-                #print(high_xh.max())
-
                 x_0_noisy[0][0][high_xh>torch.mean(high_xh)]=x[0][0][high_xh>torch.mean(high_xh)]
                 x_0_noisy[0][1][high_xh>torch.mean(high_xh)]=x[0][1][high_xh>torch.mean(high_xh)]
                 x_0_noisy[0][2][high_xh>torch.mean(high_xh)]=x[0][2][high_xh>torch.mean(high_xh)]
 
-                #print(high_xh)
-
                 x=x_0_noisy
-                #####################################################
-                
-                
-                #x_0_noisy_save=x[0].cpu().numpy()
-                #print(x_sr_noisy_save.shape)
-                #x_0_noisy_save=np.transpose(x_0_noisy_save, (1, 2, 0))
-                #x_0_noisy_save=(x_0_noisy_save+1)/2.0*255.0
-                #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/{}_noise_xsr.png'.format(t), x_0_noisy_save)
             if xh is not None:
-                #x_input=torch.cat((xh,x),1)
                 x_input=torch.cat((condition_x,x),1)
             else:
                 x_input=torch.cat((condition_x,x),1)
-            
-                ###############
             depart_gray=torch.cat((depart_gray.float(),depart_gray.float()),dim=1)
-            #x_input=torch.cat((depart_gray.to('cuda'),condition_x, x),1)
-
 
             x_recon = self.predict_start_from_noise(
-                x, t=t, noise=self.denoise_fn(x_input, noise_level))#UNet预测噪音4,12,256,256
+                x, t=t, noise=self.denoise_fn(x_input, noise_level))
 
         else:
             x_recon = self.predict_start_from_noise(
@@ -284,7 +220,7 @@ class GaussianDiffusion(nn.Module):
 
     @torch.no_grad()
     def p_sample(self, x, t, clip_denoised=True, condition_x=None,xh=None):
-        model_mean, model_log_variance = self.p_mean_variance(#得到噪音
+        model_mean, model_log_variance = self.p_mean_variance(
             x=x, t=t, clip_denoised=clip_denoised, condition_x=condition_x,xh=xh)
         noise = torch.randn_like(x) if t > 0 else torch.zeros_like(x)
         return model_mean + noise * (0.5 * model_log_variance).exp()
@@ -305,10 +241,6 @@ class GaussianDiffusion(nn.Module):
             x = x_in
             shape = x.shape
             img = torch.randn(shape, device=device)
-            #这里的img替换为x_sr加入2000步噪声后的噪声图
-            
-            
-            #############
             continuous_sqrt_alpha_cumprod = torch.FloatTensor(
                 np.random.uniform(
                     self.sqrt_alphas_cumprod_prev[699],
@@ -322,40 +254,11 @@ class GaussianDiffusion(nn.Module):
             noise=None
             noise = default(noise, lambda: torch.randn_like(x))
 
-            #############
             ret_img = x
             for i in tqdm(reversed(range(0, self.num_timesteps)), desc='sampling loop time step', total=self.num_timesteps):
-                img = self.p_sample(img, i, condition_x=x,xh=None)#求xt-1
-                #x_save=np.transpose(img[0].cpu().numpy(), (1, 2, 0))
-                #x_save=(x_save+1)/2.0*255.0
-                #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/{}_xsave.png'.format(i), x_save)               
+                img = self.p_sample(img, i, condition_x=x,xh=None)#求xt-1            
                 if i % sample_inter == 0:
                     ret_img = torch.cat([ret_img, img], dim=0)
-            
-            '''
-            xh=img
-            xsr=x[0].cpu().numpy()
-            xsr=np.transpose(xsr, (1, 2, 0))
-            xsr=(xsr+1)/2.0*255.0
-            xhr=xh[0].cpu().numpy()
-            xhr=np.transpose(xhr, (1, 2, 0))
-            xhr=(xhr+1)/2.0*255.0
-            enhance_img=Enhimg.enhance_add_image(xsr,xhr)
-            cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/00_enhance.png', enhance_img)
-            enhance_img=enhance_img / 255.0
-            enhance_img =enhance_img * 2 - 1
-            enhance_img=np.transpose(enhance_img, (2, 0, 1))
-            enhance_img=torch.from_numpy(enhance_img).unsqueeze(0).to(torch.float)
-
-            x_sr_noisy = self.q_sample(#求加噪后的xsr
-                x_start=enhance_img.to('cuda'), continuous_sqrt_alpha_cumprod=continuous_sqrt_alpha_cumprod.view(-1, 1, 1, 1), noise=noise)
-            
-            img=x_sr_noisy
-            for i in tqdm(reversed(range(0, 700)), desc='sampling loop time step', total=700):
-                img = self.p_sample(img, i, condition_x=x,xh=enhance_img.to('cuda'))#求xt-1
-                if i % sample_inter == 0:
-                    ret_img = torch.cat([ret_img, img], dim=0)                
-            '''
         if continous:
             return ret_img
         else:
@@ -396,11 +299,8 @@ class GaussianDiffusion(nn.Module):
         #noise=none
         noise = default(noise, lambda: torch.randn_like(x_start))
 
-        x_noisy = self.q_sample(#求加噪后的x0
+        x_noisy = self.q_sample(
             x_start=x_start, continuous_sqrt_alpha_cumprod=continuous_sqrt_alpha_cumprod.view(-1, 1, 1, 1), noise=noise)
-        
-        #print(type(x_noisy))
-        
         x_noisy_tmp=x_noisy
         x_sr_tmp=x_in['SR']
         x_noisy_tmp=(x_noisy_tmp+1)/2.0*255.0
@@ -413,93 +313,28 @@ class GaussianDiffusion(nn.Module):
             low_xsr=torch.from_numpy(fre_xsr[0].astype(float))
             
             high_xsr=high_xsr / 255.0
-            high_xsr =high_xsr * 2 - 1#标准化归一化
+            high_xsr =high_xsr * 2 - 1
             mid_xsr=mid_xsr / 255.0
-            mid_xsr =mid_xsr * 2 - 1#标准化归一化
+            mid_xsr =mid_xsr * 2 - 1
             low_xsr=low_xsr / 255.0
-            low_xsr =low_xsr * 2 - 1#标准化归一化
-            
-
-            '''         
-            fre_xnoisy=DeFreq.depart_frequence(x_noisy_tmp[i],t+0.5)
-            #low_xnoisy= torch.from_numpy(fre_xnoisy[0])
-            #low_xsr= torch.from_numpy(fre_xsr[0])
-
-
-            #similar_region_lf=DeFreq.calculate_ssim(fre_xnoisy[0],fre_xsr[0])#获取SR和HRnoise的低频区域的相似区域(256,256)(0,1)
-            #similar_region_lf= torch.from_numpy(similar_region_lf)
-            similar_region_hf=DeFreq.calculate_ssim(fre_xnoisy[1],fre_xsr[1],t)#获取SR和HRnoise的高频区域的相似区域(256,256)(0,1)
-            similar_region_hf= torch.from_numpy(similar_region_hf)
-            gray_image1 = x_noisy_tmp[i].cpu().numpy() 
-            
-            
-            gray_image1 = np.transpose(gray_image1, (1, 2, 0))
-            
-            # 转换为灰度图
-            gray_xnoise = cv2.cvtColor(gray_image1, cv2.COLOR_BGR2GRAY)#(256, 256)
-
-            gray_image2 = x_sr_tmp[i].cpu().numpy() 
-            gray_image2 = np.transpose(gray_image2, (1, 2, 0))
-            # 转换为灰度图
-            gray_xsr = cv2.cvtColor(gray_image2, cv2.COLOR_BGR2GRAY)#(256, 256)
-            gray_low=gray_xsr
-
-            gray_xnoise_similar=torch.from_numpy(gray_xnoise*np.array(1-similar_region_hf))
-            gray_xsr_similar=torch.from_numpy(gray_xsr*np.array(1-similar_region_hf))
-            #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/{}_gray_xsr.png'.format(t), gray_xsr)
-            if t<=500:
-                gray_xsr[similar_region_hf==0]=gray_xnoise[similar_region_hf==0]
-
-            #cv2.imwrite('/home/haida/data/zuochenjuan/SR3_plus/save/{}_gray_xsr_enhance.png'.format(t), gray_xsr)
-            gray_xnoise=torch.from_numpy(gray_xnoise)
-            gray_xsr=torch.from_numpy(gray_xsr)
-            gray_low=gray_xsr
-
-            gray_xsr_similar=gray_xsr_similar / 255.0
-            gray_xsr_similar =gray_xsr_similar * 2 - 1#标准化归一化
-            gray_low=gray_low / 255.0
-            gray_low =gray_low * 2 - 1
-            gray_xsr=gray_xsr / 255.0
-            gray_xsr =gray_xsr * 2 - 1
-            gray_xnoise=gray_xnoise / 255.0
-            gray_xnoise =gray_xnoise * 2 - 1
-            gray_xnoise_similar=gray_xnoise_similar/255.0
-            gray_xnoise_similar=gray_xnoise_similar*2-1
-            '''
-
-            
+            low_xsr =low_xsr * 2 - 1          
             depart_gray = torch.stack([low_xsr,mid_xsr,high_xsr], dim=0).unsqueeze(0)
-            
-
-
+        
             if i >= 1:
                 x_in_depart=torch.cat((x_in_depart,depart_gray),0)
             else:
                 x_in_depart=depart_gray
-        
-
+    
         if not self.conditional:
             print("x_input.shape")
             x_recon = self.denoise_fn(x_noisy, continuous_sqrt_alpha_cumprod)#UNet求噪声
         else:
-            #print(x_in['SR'].shape)
-            #print(x_noisy.shape)
-            #x_input1=torch.cat((x_sr_similar.to('cuda'),x_noisy_similar.to('cuda')),1)
-            #x_input2=torch.cat((x_in['SR'], x_noisy),1)
-            #print(x_input1.shape)
-            #print(x_input2.shape)
+
             x_in_depart=x_in_depart.float()
             x_in_depart=torch.cat((x_in_depart,x_in_depart),dim=1)
-            #x_input=torch.cat((x_in_depart.to('cuda'),x_in['SR'], x_noisy),1)#4,12,256,256
             x_input=torch.cat((x_in['SR'], x_noisy),1)#4,12,256,256
-
-            
             x_recon = self.denoise_fn(x_input, continuous_sqrt_alpha_cumprod)#x=torch.cat([x_in['SR'], x_noisy], dim=1)4,12,256,256////2,12,256,256
             
-            
-            #print("$$$$$$$$$$$$$$$$$$$$$$$")
-            #print(x_in['SR'])
-
         loss = self.loss_func(noise, x_recon)
         return loss
 
