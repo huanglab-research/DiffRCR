@@ -16,8 +16,8 @@ from utils import convert_rgb_to_ycbcr, convert_ycbcr_to_rgb, calc_psnr
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights-file', type=str, default="/home/haida/data/zuochenjuan/SR3_plus/CNN_SR/outputs/x_deep4/epoch_450.pth")
-    parser.add_argument('--image-file', type=str, default="/home/haida/data/zuochenjuan/SR3_plus/dataset/DIV2K_64_256/lr/")
+    parser.add_argument('--weights-file', type=str, default="/CNN_SR/outputs/x_deep4/epoch_450.pth")
+    parser.add_argument('--image-file', type=str, default="/dataset/DIV2K_64_256/lr/")
     parser.add_argument('--scale', type=int, default=4)
     args = parser.parse_args()
 
@@ -47,10 +47,9 @@ if __name__ == '__main__':
         image_width = (image.width // args.scale) * args.scale
         image_height = (image.height // args.scale) * args.scale
         image = image.resize((image_width, image_height), resample=pil_image.BICUBIC)
-        #image = image.resize((64, 64), resample=pil_image.BICUBIC)
+        
         image = image.resize((image.width * args.scale, image.height * args.scale), resample=pil_image.BICUBIC)
-        #image_path_save_b="".join(["/home/haida/data/zuochenjuan/SR3_plus/dataset/DRealSR_64_256/sr_64_256/",file_name])
-        #image.save(image_path_save_b)
+        
         image = np.array(image).astype(np.float32)
         ycbcr = convert_rgb_to_ycbcr(image)
 
@@ -71,7 +70,7 @@ if __name__ == '__main__':
         output = np.array([preds, ycbcr[..., 1], ycbcr[..., 2]]).transpose([1, 2, 0])
         output = np.clip(convert_ycbcr_to_rgb(output), 0.0, 255.0).astype(np.uint8)
         output = pil_image.fromarray(output)
-        image_path_save="".join(["/home/haida/data/zuochenjuan/SR3_plus/dataset/DIV2K_64_256/cnnsr/",file_name])
+        image_path_save="".join(["dataset/DIV2K_64_256/cnnsr/",file_name])
         output.save(image_path_save)
 
     print("avl_psnr={}".format(1.0*sum_psnr/i))
