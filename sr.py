@@ -185,7 +185,7 @@ if __name__ == "__main__":
         idx = 0
         result_path = '{}'.format(opt['path']['results'])
         os.makedirs(result_path, exist_ok=True)
-        for _,  val_data in enumerate(val_loader):##采样
+        for _,  val_data in enumerate(val_loader):
             idx += 1
             diffusion.feed_data(val_data)
             diffusion.test(continous=True)
